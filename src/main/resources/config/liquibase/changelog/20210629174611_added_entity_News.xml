@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <changeSet id="20210629174612-1" author="kasatkin">
+        <sql dbms="postgresql" splitStatements="true" stripComments="true">
+            CREATE TABLE news
+            (
+            id BIGSERIAL PRIMARY KEY,
+            newsname VARCHAR(255) NOT NULL,
+            description VARCHAR(1000),
+            news_date TIMESTAMP,
+            isimportant BOOLEAN NOT NULL,
+            isdeleted BOOLEAN NOT NULL
+            );
+        </sql>
+<!--        <createTable tableName="news">-->
+<!--            <column name="id" type="bigint">-->
+<!--                <constraints primaryKey="true" nullable="false"/>-->
+<!--            </column>-->
+<!--            <column name="name" type="varchar(255)">-->
+<!--                <constraints nullable="false" />-->
+<!--            </column>-->
+<!--            <column name="description" type="varchar(1000)">-->
+<!--                <constraints nullable="true" />-->
+<!--            </column>-->
+<!--            <column name="news_date" type="${datetimeType}">-->
+<!--                <constraints nullable="true" />-->
+<!--            </column>-->
+<!--            <column name="important" type="boolean">-->
+<!--                <constraints nullable="false" />-->
+<!--            </column>-->
+<!--            <column name="delete" type="boolean">-->
+<!--                <constraints nullable="false" />-->
+<!--            </column>-->
+<!--            &lt;!&ndash; jhipster-needle-liquibase-add-column - JHipster will add columns here &ndash;&gt;-->
+<!--        </createTable>-->
+    </changeSet>
+
+</databaseChangeLog>

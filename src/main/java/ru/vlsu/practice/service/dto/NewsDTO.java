@@ -1,37 +1,27 @@
-package ru.vlsu.practice.domain;
+package ru.vlsu.practice.service.dto;
+
+import ru.vlsu.practice.domain.News;
 
 import java.io.Serializable;
 import java.time.Instant;
-import javax.persistence.*;
+import java.util.Objects;
 import javax.validation.constraints.*;
 
-@Entity
-@Table(name = "news")
-public class News implements Serializable{
 
-    private static final long serialVersionUID = 1L;
+public class NewsDTO implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
     @NotNull
-    @Column(name = "newsname", nullable = false)
     private String name;
 
-    @Column(name = "description")
     private String description;
 
-    @Column(name = "news_date")
     private Instant newsDate;
 
-    @Column(name = "isimportant")
     private Boolean important;
 
-    @Column(name = "isdeleted")
     private Boolean deleted;
-
 
     public Long getId() {
         return id;
@@ -41,18 +31,8 @@ public class News implements Serializable{
         this.id = id;
     }
 
-    public News name(String name) {
-        this.name = name;
-        return this;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public News description(String name) {
-        this.name = name;
-        return this;
     }
 
     public void setName(String name) {
@@ -87,8 +67,8 @@ public class News implements Serializable{
         return deleted;
     }
 
-    public void setDeleted(Boolean deleted) {
-        this.deleted = deleted;
+    public void setDeleted(Boolean delete) {
+        this.deleted = delete;
     }
 
     @Override
@@ -96,28 +76,32 @@ public class News implements Serializable{
         if (this == o) {
             return true;
         }
-        if (!(o instanceof News)) {
+        if (!(o instanceof NewsDTO)) {
             return false;
         }
-        return id != null && id.equals(((News) o).id);
+
+        NewsDTO newsDTO = (NewsDTO) o;
+        if (this.id == null) {
+            return false;
+        }
+        return Objects.equals(this.id, newsDTO.id);
     }
 
     @Override
     public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
-        return getClass().hashCode();
+        return Objects.hash(this.id);
     }
 
+    // prettier-ignore
     @Override
     public String toString() {
-        return "News{" +
+        return "TodoDTO{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", description='" + getDescription() + "'" +
             ", newsDate='" + getNewsDate() + "'" +
-            ", important=" + getImportant() + "'" +
-            ", deleted='" + getDeleted() +
+            ", important='" + getImportant() + "'" +
+            ", delete=" + getDeleted() +
             "}";
     }
-
 }
