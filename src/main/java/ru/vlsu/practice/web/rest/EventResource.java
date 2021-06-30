@@ -58,13 +58,13 @@ public class EventResource {
     @PostMapping("/events")
     public ResponseEntity<EventDTO> createEvent(@Valid @RequestBody EventDTO eventDTO) throws URISyntaxException {
         log.debug("REST request to save Event : {}", eventDTO);
-        if (eventDTO.getName() != null) {
-            throw new BadRequestAlertException("A new event cannot already have a NAME", ENTITY_NAME, "idexists");
+        if (eventDTO.getId() != null) {
+            throw new BadRequestAlertException("A new event cannot already have an ID", ENTITY_NAME, "idexists");
         }
         EventDTO result = eventService.save(eventDTO);
         return ResponseEntity
-            .created(new URI("/api/events/" + result.getName()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getName().toString()))
+            .created(new URI("/api/events/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
@@ -84,15 +84,15 @@ public class EventResource {
         @Valid @RequestBody EventDTO eventDTO
     ) throws URISyntaxException {
         log.debug("REST request to update Event : {}, {}", id, eventDTO);
-        if (eventDTO.getName() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "namenull");
+        if (eventDTO.getId() == null) {
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         if (!Objects.equals(id, eventDTO.getId())) {
-            throw new BadRequestAlertException("Invalid NAME", ENTITY_NAME, "idinvalname");
+            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
         if (!eventRepository.existsById(id)) {
-            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "namenotfound");
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
         EventDTO result = eventService.save(eventDTO);
@@ -119,22 +119,22 @@ public class EventResource {
         @NotNull @RequestBody EventDTO eventDTO
     ) throws URISyntaxException {
         log.debug("REST request to partial update Event partially : {}, {}", id, eventDTO);
-        if (eventDTO.getName() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "namenull");
+        if (eventDTO.getId() == null) {
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, eventDTO.getName())) {
-            throw new BadRequestAlertException("Invalid NAME", ENTITY_NAME, "nameinvalid");
+        if (!Objects.equals(id, eventDTO.getId())) {
+            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
         if (!eventRepository.existsById(id)) {
-            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "namenotfound");
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
         Optional<EventDTO> result = eventService.partialUpdate(eventDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, eventDTO.getName().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, eventDTO.getId().toString())
         );
     }
 

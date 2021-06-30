@@ -80,7 +80,7 @@ public class EventDTO implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof TodoDTO)) {
+        if (!(o instanceof EventDTO)) {
             return false;
         }
 
@@ -99,7 +99,7 @@ public class EventDTO implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "TodoDTO{" +
+        return "EventDTO{" +
             ", name='" + getName() + "'" +
             ", description='" + getDescription() + "'" +
             ", dateStart='" + getDateStart() + "'" +

@@ -33,7 +33,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventDTO save(EventDTO eventDTO) {
-        log.debug("Request to save Todo : {}", eventDTO);
+        log.debug("Request to save Event : {}", eventDTO);
         Event event = eventMapper.toEntity(eventDTO);
         event = eventRepository.save(event);
         return eventMapper.toDto(event);

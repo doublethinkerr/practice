@@ -12,7 +12,7 @@ public interface EventService {
     /**
      * Save a event.
      *
-     * @param todoDTO the entity to save.
+     * @param eventDTO the entity to save.
      * @return the persisted entity.
      */
     EventDTO save(EventDTO eventDTO);
