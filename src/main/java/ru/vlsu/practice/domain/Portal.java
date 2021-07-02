@@ -1,16 +1,16 @@
 package ru.vlsu.practice.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
 @Entity
-@Table(name = "news")
-public class News implements Serializable{
+@Table(name = "portal")
+public class Portal implements Serializable{
 
     private static final long serialVersionUID = 1L;
 
@@ -20,29 +20,33 @@ public class News implements Serializable{
     private Long id;
 
     @NotNull
-    @Column(name = "news_name", nullable = false)
+    @Column(name = "portal_name", nullable = false)
     private String name;
 
     @Column(name = "description")
     private String description;
 
-    @NotNull
-    @Column(name = "news_date")
-    private Instant newsDate;
 
-    @JsonIgnoreProperties(value = "newsList")
-    @ManyToOne (optional=true, cascade=CascadeType.MERGE)
-    @JoinColumn (name="portal_id")
-    private Portal portal;
+    @Column(name = "portal_type")
+    private  String type;
+    //private TypeEnum type;
+    //@Enumerated(value = EnumType.STRING)
 
-    @NotNull
-    @Column(name = "important")
-    private Boolean important;
+
+    @OneToMany (mappedBy="portal")
+    private List<News> newsList;
+
+    public List<News> getNewsList() {
+        return newsList;
+    }
+
+    public void setNewsList(List<News> newsList) {
+        this.newsList = newsList;
+    }
 
     @NotNull
     @Column(name = "deleted")
     private Boolean deleted;
-
 
     public Long getId() {
         return id;
@@ -52,26 +56,8 @@ public class News implements Serializable{
         this.id = id;
     }
 
-    public News name(String name) {
-        this.name = name;
-        return this;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public News description(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public Portal getPortal() {
-        return portal;
-    }
-
-    public void setPortal(Portal portal) {
-        this.portal = portal;
     }
 
     public void setName(String name) {
@@ -86,21 +72,31 @@ public class News implements Serializable{
         this.description = description;
     }
 
-    public Instant getNewsDate() {
-        return newsDate;
+    public String getType() {
+        return type;
     }
 
-    public void setNewsDate(Instant newsDate) {
-        this.newsDate = newsDate;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public Boolean getImportant() {
-        return important;
+    /*    public TypeEnum getType() {
+        return type;
     }
 
-    public void setImportant(Boolean important) {
-        this.important = important;
+    public void setType(TypeEnum type) {
+        this.type = type;
+    }*/
+
+/*
+    public List<News> getNewsList() {
+        return newsList;
     }
+
+    public void setNewsList(List<News> newsList) {
+        this.newsList = newsList;
+    }
+*/
 
     public Boolean getDeleted() {
         return deleted;
@@ -110,15 +106,16 @@ public class News implements Serializable{
         this.deleted = deleted;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof News)) {
+        if (!(o instanceof Portal)) {
             return false;
         }
-        return id != null && id.equals(((News) o).id);
+        return id != null && id.equals(((Portal) o).id);
     }
 
     @Override
@@ -127,15 +124,14 @@ public class News implements Serializable{
         return getClass().hashCode();
     }
 
+    // prettier-ignore
     @Override
     public String toString() {
-        return "News{" +
+        return "Portal{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", description='" + getDescription() + "'" +
-            ", newsDate='" + getNewsDate() + "'" +
-            //", portal='" + getPortal().getName() + "'" +
-            ", important=" + getImportant() + "'" +
+            ", type='" + getType() + "'" +
             ", deleted='" + getDeleted() +
             "}";
     }

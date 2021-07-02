@@ -21,7 +21,7 @@ public class Todo implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "newsname", nullable = false)
+    @Column(name = "news_name", nullable = false)
     private String name;
 
     @Column(name = "description")

@@ -1,15 +1,12 @@
 package ru.vlsu.practice.service.dto;
 
-import ru.vlsu.practice.domain.News;
-import ru.vlsu.practice.domain.Portal;
-
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 import java.util.Objects;
 import javax.validation.constraints.*;
 
-
-public class NewsDTO implements Serializable {
+public class PortalDTO implements Serializable{
 
     private Long id;
 
@@ -18,13 +15,18 @@ public class NewsDTO implements Serializable {
 
     private String description;
 
-    @NotNull
-    private Instant newsDate;
+    //private TypeEnum type;
+    private String type;
 
-    private Portal portal;
+    private List<NewsDTO> newsList;
 
-    @NotNull
-    private Boolean important;
+    public List<NewsDTO> getNewsList() {
+        return newsList;
+    }
+
+    public void setNewsList(List<NewsDTO> newsList) {
+        this.newsList = newsList;
+    }
 
     @NotNull
     private Boolean deleted;
@@ -53,36 +55,28 @@ public class NewsDTO implements Serializable {
         this.description = description;
     }
 
-    public Instant getNewsDate() {
-        return newsDate;
+    public String getType() {
+        return type;
     }
 
-    public void setNewsDate(Instant newsDate) {
-        this.newsDate = newsDate;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public Boolean getImportant() {
-        return important;
+    /*    public TypeEnum getType() {
+        return type;
     }
 
-    public void setImportant(Boolean important) {
-        this.important = important;
-    }
+    public void setType(TypeEnum type) {
+        this.type = type;
+    }*/
 
     public Boolean getDeleted() {
         return deleted;
     }
 
-    public void setDeleted(Boolean delete) {
-        this.deleted = delete;
-    }
-
-    public Portal getPortal() {
-        return portal;
-    }
-
-    public void setPortal(Portal portal) {
-        this.portal = portal;
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 
     @Override
@@ -90,15 +84,15 @@ public class NewsDTO implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof NewsDTO)) {
+        if (!(o instanceof PortalDTO)) {
             return false;
         }
 
-        NewsDTO newsDTO = (NewsDTO) o;
+        PortalDTO portalDTO = (PortalDTO) o;
         if (this.id == null) {
             return false;
         }
-        return Objects.equals(this.id, newsDTO.id);
+        return Objects.equals(this.id, portalDTO.id);
     }
 
     @Override
@@ -109,14 +103,13 @@ public class NewsDTO implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "TodoDTO{" +
+        return "PortalDTO{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", description='" + getDescription() + "'" +
-            ", newsDate='" + getNewsDate() + "'" +
-            //", portal='" + getPortal().getName() + "'" +
-            ", important='" + getImportant() + "'" +
-            ", delete=" + getDeleted() +
+            ", type='" + getType() + "'" +
+            ", deleted='" + getDeleted() +
             "}";
     }
+
 }
