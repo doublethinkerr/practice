@@ -2,6 +2,7 @@ package ru.vlsu.practice.domain;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
@@ -35,8 +36,20 @@ public class Place implements Serializable {
     @Column(name = "deleted")
     private Boolean deleted;
 
+    @OneToMany (mappedBy="place", fetch=FetchType.LAZY)
+    private List<Event> eventsList;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
+
+
+    public List<Event> getEventsList() {
+        return eventsList;
+    }
+
+    public void setEventsList(List<Event> eventsList) {
+        this.eventsList = eventsList;
+    }
+
     public Long getId() {
         return id;
     }

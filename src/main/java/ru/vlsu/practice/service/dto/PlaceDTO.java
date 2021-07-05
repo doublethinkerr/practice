@@ -2,6 +2,7 @@ package ru.vlsu.practice.service.dto;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 import java.util.Objects;
 import javax.validation.constraints.*;
 
@@ -24,6 +25,15 @@ public class PlaceDTO implements Serializable {
     @NotNull
     private Boolean deleted;
 
+    private List<EventDTO> eventsList;
+
+    public List<EventDTO> getEventsList() {
+        return eventsList;
+    }
+
+    public void setEventsList(List<EventDTO> eventsList) {
+        this.eventsList = eventsList;
+    }
 
     public Long getId() {
         return id;

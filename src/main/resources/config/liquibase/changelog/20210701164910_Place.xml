@@ -20,4 +20,12 @@
 
     </changeSet>
 
+    <changeSet id="20210701164910-2" author="vlmarina">
+        <sql dbms="postgresql" splitStatements="true" stripComments="true">
+            ALTER TABLE event
+            ADD COLUMN place_id BIGINT REFERENCES place
+        </sql>
+
+    </changeSet>
+
 </databaseChangeLog>

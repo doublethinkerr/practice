@@ -1,5 +1,7 @@
 package ru.vlsu.practice.service.dto;
 
+import ru.vlsu.practice.domain.Place;
+
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Date;
@@ -26,6 +28,16 @@ public class EventDTO implements Serializable {
 
     @NotNull
     private Boolean deleted;
+
+    private Place place;
+
+    public Place getPlace() {
+        return place;
+    }
+
+    public void setPlace(Place place) {
+        this.place = place;
+    }
 
     public Long getId() {
         return id;
@@ -105,6 +117,7 @@ public class EventDTO implements Serializable {
             ", dateStart='" + getDateStart() + "'" +
             ", dateEnd='" + getDateEnd() + "'" +
             ", deleted='" + getDeleted() + "'" +
+            ", placeId='" + getPlace().getId() + "'" +
             "}";
     }
 }

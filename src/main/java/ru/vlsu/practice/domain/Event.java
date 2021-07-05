@@ -1,5 +1,7 @@
 package ru.vlsu.practice.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Date;
@@ -39,8 +41,21 @@ public class Event implements Serializable {
     @Column(name = "deleted")
     private Boolean deleted;
 
+    @JsonIgnoreProperties(value = "eventList")
+    @ManyToOne (optional=true, cascade=CascadeType.MERGE)
+    @JoinColumn (name="place_id")
+    private Place place;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
+
+
+    public Place getPlace() {
+        return place;
+    }
+
+    public void setPlace(Place place) {
+        this.place = place;
+    }
 
     public Long getId() {
         return id;

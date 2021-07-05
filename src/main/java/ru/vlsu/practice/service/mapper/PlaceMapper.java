@@ -7,5 +7,5 @@ import ru.vlsu.practice.service.dto.PlaceDTO;
 /**
  * Mapper for the entity {@link Place} and its DTO {@link PlaceDTO}.
  */
-@Mapper(componentModel = "spring", uses = {})
+@Mapper(componentModel = "spring", uses = {EventMapper.class})
 public interface PlaceMapper extends EntityMapper<PlaceDTO, Place> {}
