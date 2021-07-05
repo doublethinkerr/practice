@@ -2,6 +2,7 @@ package ru.vlsu.practice.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -30,7 +31,7 @@ public class News implements Serializable{
     @Column(name = "news_date")
     private Instant newsDate;
 
-    @JsonIgnoreProperties(value = "newsList")
+    @JsonIgnore
     @ManyToOne (optional=true, cascade=CascadeType.MERGE)
     @JoinColumn (name="portal_id")
     private Portal portal;
@@ -134,7 +135,7 @@ public class News implements Serializable{
             ", name='" + getName() + "'" +
             ", description='" + getDescription() + "'" +
             ", newsDate='" + getNewsDate() + "'" +
-            //", portal='" + getPortal().getName() + "'" +
+            //", portalId='" + getPortal().getId() + "'" +
             ", important=" + getImportant() + "'" +
             ", deleted='" + getDeleted() +
             "}";

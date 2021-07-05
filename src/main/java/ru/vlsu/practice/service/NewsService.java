@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.vlsu.practice.service.dto.NewsDTO;
+import ru.vlsu.practice.service.dto.PortalDTO;
 
 @Service
 public interface NewsService {
@@ -16,6 +17,8 @@ public interface NewsService {
     Page<NewsDTO> findAll(Pageable pageable);
 
     Optional<NewsDTO> findOne(Long id);
+
+    Optional<NewsDTO> findByName(String name);
 
     void delete(Long id);
 

@@ -13,6 +13,7 @@ import ru.vlsu.practice.domain.News;
 import ru.vlsu.practice.repository.NewsRepository;
 import ru.vlsu.practice.service.NewsService;
 import ru.vlsu.practice.service.dto.NewsDTO;
+import ru.vlsu.practice.service.dto.PortalDTO;
 import ru.vlsu.practice.service.dto.TodoDTO;
 import ru.vlsu.practice.web.rest.errors.BadRequestAlertException;
 import tech.jhipster.web.util.HeaderUtil;
@@ -115,6 +116,13 @@ public class NewsResource {
         Page<NewsDTO> page = newsService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    @GetMapping("/news/find")
+    public ResponseEntity<NewsDTO> getNewsByName(@RequestParam String name) {
+        log.debug("REST request to get News by name : {}", name);
+        Optional<NewsDTO> newsDTO = newsService.findByName(name);
+        return ResponseUtil.wrapOrNotFound(newsDTO);
     }
 
     @GetMapping("/news/{id}")

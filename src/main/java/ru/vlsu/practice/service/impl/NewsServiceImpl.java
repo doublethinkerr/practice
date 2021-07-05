@@ -11,6 +11,7 @@ import ru.vlsu.practice.domain.News;
 import ru.vlsu.practice.repository.NewsRepository;
 import ru.vlsu.practice.service.NewsService;
 import ru.vlsu.practice.service.dto.NewsDTO;
+import ru.vlsu.practice.service.dto.PortalDTO;
 import ru.vlsu.practice.service.mapper.NewsMapper;
 
 @Service
@@ -65,6 +66,13 @@ public class NewsServiceImpl implements NewsService {
     public Optional<NewsDTO> findOne(Long id) {
         log.debug("Request to get News : {}", id);
         return newsRepository.findById(id).map(newsMapper::toDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<NewsDTO> findByName(String name) {
+        log.debug("Request to get News by name : {}", name);
+        return newsRepository.findByName(name).map(newsMapper::toDto);
     }
 
     @Override

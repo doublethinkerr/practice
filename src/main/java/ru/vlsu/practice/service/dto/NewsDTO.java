@@ -1,5 +1,6 @@
 package ru.vlsu.practice.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import ru.vlsu.practice.domain.News;
 import ru.vlsu.practice.domain.Portal;
 
@@ -21,7 +22,7 @@ public class NewsDTO implements Serializable {
     @NotNull
     private Instant newsDate;
 
-    private Portal portal;
+    private Long portalId;
 
     @NotNull
     private Boolean important;
@@ -57,6 +58,14 @@ public class NewsDTO implements Serializable {
         return newsDate;
     }
 
+    public Long getPortalId() {
+        return portalId;
+    }
+
+    public void setPortalId(Long portalId) {
+        this.portalId = portalId;
+    }
+
     public void setNewsDate(Instant newsDate) {
         this.newsDate = newsDate;
     }
@@ -77,13 +86,7 @@ public class NewsDTO implements Serializable {
         this.deleted = delete;
     }
 
-    public Portal getPortal() {
-        return portal;
-    }
 
-    public void setPortal(Portal portal) {
-        this.portal = portal;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -109,12 +112,11 @@ public class NewsDTO implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "TodoDTO{" +
+        return "NewsDTO{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", description='" + getDescription() + "'" +
             ", newsDate='" + getNewsDate() + "'" +
-            //", portal='" + getPortal().getName() + "'" +
             ", important='" + getImportant() + "'" +
             ", delete=" + getDeleted() +
             "}";

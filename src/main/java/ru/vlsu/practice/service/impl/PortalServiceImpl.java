@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.vlsu.practice.domain.Portal;
@@ -67,6 +68,14 @@ public class PortalServiceImpl  implements PortalService {
     public Optional<PortalDTO> findOne(Long id) {
         log.debug("Request to get Portal : {}", id);
         return portalRepository.findById(id).map(portalMapper::toDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    //@Query("SELECT t FROM Thing t WHERE t.fooIn = ?1 AND t.bar = ?2")
+    public Optional<PortalDTO> findByName(String name) {
+        log.debug("Request to get Portal by name : {}", name);
+        return portalRepository.findByName(name).map(portalMapper::toDto);
     }
 
     @Override

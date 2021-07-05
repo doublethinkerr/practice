@@ -15,6 +15,8 @@ public interface PortalService {
 
     Optional<PortalDTO> findOne(Long id);
 
+    Optional<PortalDTO> findByName(String name);
+
     void delete(Long id);
 
 }

@@ -117,6 +117,14 @@ public class PortalResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
+    @GetMapping("/portals/find")
+    public ResponseEntity<PortalDTO> getPortalByName(@RequestParam String name) {
+        log.debug("REST request to get Portal by name : {}", name);
+        Optional<PortalDTO> portalDTO = portalService.findByName(name);
+        return ResponseUtil.wrapOrNotFound(portalDTO);
+    }
+
+
     @GetMapping("/portals/{id}")
     public ResponseEntity<PortalDTO> getPortal(@PathVariable Long id) {
         log.debug("REST request to get Portal : {}", id);

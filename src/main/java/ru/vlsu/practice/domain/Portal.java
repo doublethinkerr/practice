@@ -1,5 +1,6 @@
 package ru.vlsu.practice.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
@@ -32,8 +33,8 @@ public class Portal implements Serializable{
     //private TypeEnum type;
     //@Enumerated(value = EnumType.STRING)
 
-
-    @OneToMany (mappedBy="portal")
+    @JsonIgnore
+    @OneToMany (mappedBy="portal", fetch = FetchType.LAZY)
     private List<News> newsList;
 
     public List<News> getNewsList() {
@@ -88,15 +89,6 @@ public class Portal implements Serializable{
         this.type = type;
     }*/
 
-/*
-    public List<News> getNewsList() {
-        return newsList;
-    }
-
-    public void setNewsList(List<News> newsList) {
-        this.newsList = newsList;
-    }
-*/
 
     public Boolean getDeleted() {
         return deleted;
