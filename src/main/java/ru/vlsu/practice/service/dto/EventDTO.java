@@ -29,16 +29,27 @@ public class EventDTO implements Serializable {
     @NotNull
     private Boolean deleted;
 
-    private Place place;
+    private Long placeId;
 
-    public Place getPlace() {
-        return place;
+    public Long getPlaceId() {
+        return placeId;
     }
 
-    public void setPlace(Place place) {
-        this.place = place;
+    public void setPlaceId(Long placeId) {
+        this.placeId = placeId;
     }
 
+    /*
+        private Place place;
+
+        public Place getPlace() {
+            return place;
+        }
+
+        public void setPlace(Place place) {
+            this.place = place;
+        }
+    */
     public Long getId() {
         return id;
     }
@@ -116,8 +127,8 @@ public class EventDTO implements Serializable {
             ", description='" + getDescription() + "'" +
             ", dateStart='" + getDateStart() + "'" +
             ", dateEnd='" + getDateEnd() + "'" +
+            ", placeId='" + getPlaceId() + "'" +
             ", deleted='" + getDeleted() + "'" +
-            ", placeId='" + getPlace().getId() + "'" +
             "}";
     }
 }

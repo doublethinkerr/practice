@@ -1,5 +1,6 @@
 package ru.vlsu.practice.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
@@ -41,7 +42,9 @@ public class Event implements Serializable {
     @Column(name = "deleted")
     private Boolean deleted;
 
-    @JsonIgnoreProperties(value = "eventList")
+
+
+    @JsonIgnore
     @ManyToOne (optional=true, cascade=CascadeType.MERGE)
     @JoinColumn (name="place_id")
     private Place place;

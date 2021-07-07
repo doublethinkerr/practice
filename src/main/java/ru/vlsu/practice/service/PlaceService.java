@@ -47,4 +47,12 @@ public interface PlaceService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    /**
+     * Get the "name" place.
+     *
+     * @param name the id of the entity.
+     * @return the entity.
+     */
+    Optional<PlaceDTO> findByName(String name);
 }

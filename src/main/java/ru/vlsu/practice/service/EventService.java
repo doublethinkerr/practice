@@ -47,4 +47,12 @@ public interface EventService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    /**
+     * Get the "name" event.
+     *
+     * @param name the name of the entity.
+     * @return the entity.
+     */
+    Optional<EventDTO> findByName(String name);
 }

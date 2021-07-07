@@ -75,5 +75,13 @@ public class PlaceServiceImpl implements PlaceService {
         log.debug("Request to delete Place : {}", id);
         placeRepository.deleteById(id);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<PlaceDTO> findByName(String name) {
+        log.debug("Request to get Place by name : {}", name);
+        return placeRepository.findByName(name).map(placeMapper::toDto);
+    }
+
 }
 

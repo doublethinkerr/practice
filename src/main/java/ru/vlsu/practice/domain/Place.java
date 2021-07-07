@@ -1,5 +1,7 @@
 package ru.vlsu.practice.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
@@ -36,6 +38,7 @@ public class Place implements Serializable {
     @Column(name = "deleted")
     private Boolean deleted;
 
+    @JsonIgnore
     @OneToMany (mappedBy="place", fetch=FetchType.LAZY)
     private List<Event> eventsList;
 

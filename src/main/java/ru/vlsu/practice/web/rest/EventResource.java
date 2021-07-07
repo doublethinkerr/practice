@@ -180,4 +180,19 @@ public class EventResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }
+
+    /**
+     * {@code GET  /events/:find} : get the "name" event.
+     *
+     * @param name the name of the eventDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the eventDTO, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/events/find")
+    public ResponseEntity<EventDTO> getEventByName(@RequestParam String name) {
+        log.debug("REST request to get Event by name : {}", name);
+        Optional<EventDTO> eventDTO = eventService.findByName(name);
+        return ResponseUtil.wrapOrNotFound(eventDTO);
+    }
+
+
 }

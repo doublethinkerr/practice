@@ -75,4 +75,13 @@ public class EventServiceImpl implements EventService {
         log.debug("Request to delete Event : {}", id);
         eventRepository.deleteById(id);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<EventDTO> findByName(String name) {
+        log.debug("Request to get Event by name : {}", name);
+        return eventRepository.findByName(name).map(eventMapper::toDto);
+    }
+
+
 }

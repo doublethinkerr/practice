@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.vlsu.practice.repository.PlaceRepository;
 import ru.vlsu.practice.service.PlaceService;
+import ru.vlsu.practice.service.dto.EventDTO;
 import ru.vlsu.practice.service.dto.PlaceDTO;
 import ru.vlsu.practice.web.rest.errors.BadRequestAlertException;
 import tech.jhipster.web.util.HeaderUtil;
@@ -179,5 +180,18 @@ public class PlaceResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    /**
+     * {@code GET  /places/:find} : get the "name" place.
+     *
+     * @param name the name of the placeDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the placeDTO, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/places/find")
+    public ResponseEntity<PlaceDTO> getPLaceByName(@RequestParam String name) {
+        log.debug("REST request to get Place by name : {}", name);
+        Optional<PlaceDTO> placeDTO = placeService.findByName(name);
+        return ResponseUtil.wrapOrNotFound(placeDTO);
     }
 }
