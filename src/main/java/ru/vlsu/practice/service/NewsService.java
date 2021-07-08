@@ -10,7 +10,7 @@ import ru.vlsu.practice.service.dto.PortalDTO;
 @Service
 public interface NewsService {
 
-    NewsDTO save(NewsDTO newsDTO);
+    NewsDTO save(NewsDTO newsDTO) throws Exception;
 
     Optional<NewsDTO> partialUpdate(NewsDTO newsDTO);
 

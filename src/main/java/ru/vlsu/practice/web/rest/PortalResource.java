@@ -4,16 +4,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.vlsu.practice.domain.News;
+import ru.vlsu.practice.domain.Portal;
+import ru.vlsu.practice.repository.NewsRepository;
 import ru.vlsu.practice.repository.PortalRepository;
+import ru.vlsu.practice.service.NewsService;
 import ru.vlsu.practice.service.PortalService;
 
+import ru.vlsu.practice.service.dto.NewsDTO;
 import ru.vlsu.practice.service.dto.PortalDTO;
-import ru.vlsu.practice.service.dto.TodoDTO;
 import ru.vlsu.practice.web.rest.errors.BadRequestAlertException;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
@@ -23,17 +28,15 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
 public class PortalResource {
 
-    private final Logger log = LoggerFactory.getLogger(TodoResource.class);
+    private final Logger log = LoggerFactory.getLogger(PortalResource.class);
 
-    private static final String ENTITY_NAME = "todo";
+    private static final String ENTITY_NAME = "portal";
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
@@ -42,7 +45,8 @@ public class PortalResource {
 
     private final PortalRepository portalRepository;
 
-    public PortalResource(PortalService portalService, PortalRepository portalRepository) {
+
+    public PortalResource(PortalService portalService, PortalRepository portalRepository, NewsRepository newsRepository, NewsService newsService) {
         this.portalService = portalService;
         this.portalRepository = portalRepository;
     }
@@ -112,7 +116,19 @@ public class PortalResource {
     @GetMapping("/portals")
     public ResponseEntity<List<PortalDTO>> getAllPortals(Pageable pageable) {
         log.debug("REST request to get a page of Portals");
-        Page<PortalDTO> page = portalService.findAll(pageable);
+
+
+        ArrayList<PortalDTO> list = new ArrayList<>();
+        Iterable <PortalDTO> iterable = portalService.findAll(pageable);
+        Iterator <PortalDTO> iterator = iterable.iterator();
+        while (iterator.hasNext()){
+            PortalDTO portalDTO = iterator.next();
+            if (portalDTO.getDeleted()==false) list.add(portalDTO);
+        }
+        Page<PortalDTO> page = new PageImpl<>(list);
+
+
+
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }

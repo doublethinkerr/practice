@@ -81,7 +81,11 @@ public class PortalServiceImpl  implements PortalService {
     @Override
     public void delete(Long id) {
         log.debug("Request to delete Portal : {}", id);
-        portalRepository.deleteById(id);
+        int count = portalRepository.findById(id).get().getNewsList().size();
+        for (int i = 0; i<count; i++){
+            portalRepository.findById(id).get().getNewsList().get(i).setDeleted(true);
+        }
+        portalRepository.findById(id).get().setDeleted(true);
     }
 
 }

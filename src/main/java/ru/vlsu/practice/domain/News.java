@@ -32,6 +32,7 @@ public class News implements Serializable{
     private Instant newsDate;
 
     @JsonIgnore
+    @NotNull
     @ManyToOne (optional=true, cascade=CascadeType.MERGE)
     @JoinColumn (name="portal_id")
     private Portal portal;

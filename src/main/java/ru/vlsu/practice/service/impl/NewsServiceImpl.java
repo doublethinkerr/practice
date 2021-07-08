@@ -9,10 +9,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.vlsu.practice.domain.News;
 import ru.vlsu.practice.repository.NewsRepository;
+import ru.vlsu.practice.repository.PortalRepository;
 import ru.vlsu.practice.service.NewsService;
 import ru.vlsu.practice.service.dto.NewsDTO;
-import ru.vlsu.practice.service.dto.PortalDTO;
 import ru.vlsu.practice.service.mapper.NewsMapper;
+import ru.vlsu.practice.web.rest.errors.BadRequestAlertException;
 
 @Service
 @Transactional
@@ -24,13 +25,19 @@ public class NewsServiceImpl implements NewsService {
 
     private final NewsMapper newsMapper;
 
-    public NewsServiceImpl(NewsRepository newsRepository, NewsMapper newsMapper) {
+    private final PortalRepository portalRepository;
+
+    public NewsServiceImpl(NewsRepository newsRepository, NewsMapper newsMapper, PortalRepository portalRepository) {
         this.newsRepository = newsRepository;
         this.newsMapper = newsMapper;
+        this.portalRepository = portalRepository;
     }
 
     @Override
-    public NewsDTO save(NewsDTO newsDTO) {
+    public NewsDTO save(NewsDTO newsDTO) throws Exception {
+        if (portalRepository.findById(newsDTO.getPortalId()).get().getDeleted() == true){
+            throw new Exception("A new News cannot connect to deleted portal");
+        }
         log.debug("Request to save News : {}", newsDTO);
         News news = newsMapper.toEntity(newsDTO);
         news = newsRepository.save(news);
@@ -78,6 +85,14 @@ public class NewsServiceImpl implements NewsService {
     @Override
     public void delete(Long id) {
         log.debug("Request to delete News : {}", id);
-        newsRepository.deleteById(id);
+        newsRepository.findById(id).get().setDeleted(true);
     }
+
+/*    public void deleteFlag(Long id) {
+        log.debug("Request to delete flag of News : {}", id);
+        Optional<News> news = newsRepository.findById(id);
+        news.get().setDeleted(true);
+
+    }*/
+
 }

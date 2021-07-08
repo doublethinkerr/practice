@@ -4,17 +4,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ru.vlsu.practice.domain.News;
 import ru.vlsu.practice.repository.NewsRepository;
+import ru.vlsu.practice.repository.PortalRepository;
 import ru.vlsu.practice.service.NewsService;
 import ru.vlsu.practice.service.dto.NewsDTO;
-import ru.vlsu.practice.service.dto.PortalDTO;
-import ru.vlsu.practice.service.dto.TodoDTO;
 import ru.vlsu.practice.web.rest.errors.BadRequestAlertException;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
@@ -24,9 +23,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
@@ -43,17 +40,21 @@ public class NewsResource {
 
     private final NewsRepository newsRepository;
 
-    public NewsResource(NewsService newsService, NewsRepository newsRepository) {
+
+    public NewsResource(NewsService newsService, NewsRepository newsRepository, PortalRepository portalRepository) {
         this.newsService = newsService;
         this.newsRepository = newsRepository;
     }
 
     @PostMapping("/news")
-    public ResponseEntity<NewsDTO> createNews(@Valid @RequestBody NewsDTO newsDTO) throws URISyntaxException {
+    public ResponseEntity<NewsDTO> createNews(@Valid @RequestBody NewsDTO newsDTO) throws Exception {
         log.debug("REST request to save News : {}", newsDTO);
         if (newsDTO.getId() != null) {
             throw new BadRequestAlertException("A new News cannot already have an ID", ENTITY_NAME, "idexists");
         }
+/*        if (portalRepository.findById(newsDTO.getPortalId()).get().getDeleted() == true){
+            throw new Exception("A new News cannot connect to deleted portal");
+        }*/
         NewsDTO result = newsService.save(newsDTO);
         return ResponseEntity
             .created(new URI("/api/news/" + result.getId()))
@@ -65,7 +66,7 @@ public class NewsResource {
     public ResponseEntity<NewsDTO> updateNews(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody NewsDTO newsDTO
-        ) throws URISyntaxException {
+        ) throws Exception {
         log.debug("REST request to update News : {}, {}", id, newsDTO);
         if (newsDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -113,7 +114,18 @@ public class NewsResource {
     @GetMapping("/news")
     public ResponseEntity<List<NewsDTO>> getAllNews(Pageable pageable) {
         log.debug("REST request to get a page of News");
-        Page<NewsDTO> page = newsService.findAll(pageable);
+
+
+        ArrayList<NewsDTO> list = new ArrayList<>();
+        Iterable <NewsDTO> iterable = newsService.findAll(pageable);
+        Iterator<NewsDTO> iterator = iterable.iterator();
+        while (iterator.hasNext()){
+            NewsDTO newsDTO = iterator.next();
+            if (newsDTO.getDeleted()==false) list.add(newsDTO);
+        }
+        Page<NewsDTO> page = new PageImpl<>(list);
+
+
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
