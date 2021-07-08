@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.vlsu.practice.domain.News;
 import ru.vlsu.practice.domain.Portal;
 import ru.vlsu.practice.repository.PortalRepository;
 import ru.vlsu.practice.service.PortalService;
@@ -17,6 +18,7 @@ import ru.vlsu.practice.service.mapper.PortalMapper;
 import javax.sound.sampled.Port;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -64,15 +66,8 @@ public class PortalServiceImpl  implements PortalService {
     public Page<PortalDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Portals");
 
-        ArrayList<Portal> list = new ArrayList<>();
-        Iterable <Portal> iterable = portalRepository.findAll(pageable);
-        Iterator<Portal> iterator = iterable.iterator();
-        while (iterator.hasNext()){
-            Portal portal = iterator.next();
-            if (portal.getDeleted()==false) list.add(portal);
-        }
+        List<Portal> list = portalRepository.findAllByDeleted(false, pageable);
         Page<Portal> page = new PageImpl<>(list);
-
         return page.map(portalMapper::toDto);
     }
 
@@ -85,7 +80,6 @@ public class PortalServiceImpl  implements PortalService {
 
     @Override
     @Transactional(readOnly = true)
-    //@Query("SELECT t FROM Thing t WHERE t.fooIn = ?1 AND t.bar = ?2")
     public Optional<PortalDTO> findByName(String name) {
         log.debug("Request to get Portal by name : {}", name);
         return portalRepository.findByName(name).map(portalMapper::toDto);
@@ -94,11 +88,18 @@ public class PortalServiceImpl  implements PortalService {
     @Override
     public void delete(Long id) {
         log.debug("Request to delete Portal : {}", id);
-        int count = portalRepository.findById(id).get().getNewsList().size();
-        for (int i = 0; i<count; i++){
-            portalRepository.findById(id).get().getNewsList().get(i).setDeleted(true);
+
+        Optional<Portal> portal = portalRepository.findById(id);
+        if(portal.isPresent()){
+            portalRepository.findById(id).get().setDeleted(true);
+            for (News news : portal.get().getNewsList()){
+                news.setDeleted(true);
+            }
+            portalRepository.save(portal.get());
         }
-        portalRepository.findById(id).get().setDeleted(true);
+
+
+
     }
 
 }

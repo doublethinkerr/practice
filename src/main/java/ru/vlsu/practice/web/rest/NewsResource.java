@@ -52,9 +52,7 @@ public class NewsResource {
         if (newsDTO.getId() != null) {
             throw new BadRequestAlertException("A new News cannot already have an ID", ENTITY_NAME, "idexists");
         }
-/*        if (portalRepository.findById(newsDTO.getPortalId()).get().getDeleted() == true){
-            throw new Exception("A new News cannot connect to deleted portal");
-        }*/
+
         NewsDTO result = newsService.save(newsDTO);
         return ResponseEntity
             .created(new URI("/api/news/" + result.getId()))
@@ -114,14 +112,6 @@ public class NewsResource {
     @GetMapping("/news")
     public ResponseEntity<List<NewsDTO>> getAllNews(Pageable pageable) {
         log.debug("REST request to get a page of News");
-/*        ArrayList<NewsDTO> list = new ArrayList<>();
-        Iterable <NewsDTO> iterable = newsService.findAll(pageable);
-        Iterator<NewsDTO> iterator = iterable.iterator();
-        while (iterator.hasNext()){
-            NewsDTO newsDTO = iterator.next();
-            if (newsDTO.getDeleted()==false) list.add(newsDTO);
-        }
-        Page<NewsDTO> page = new PageImpl<>(list);*/
 
         Page page = newsService.findAll(pageable);
 

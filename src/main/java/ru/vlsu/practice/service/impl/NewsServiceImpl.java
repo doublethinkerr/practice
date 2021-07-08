@@ -1,5 +1,6 @@
 package ru.vlsu.practice.service.impl;
 
+import java.net.BindException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.vlsu.practice.domain.News;
+import ru.vlsu.practice.exception.BindNewsToDeletedPortalException;
 import ru.vlsu.practice.repository.NewsRepository;
 import ru.vlsu.practice.repository.PortalRepository;
 import ru.vlsu.practice.service.NewsService;
@@ -39,10 +41,10 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public NewsDTO save(NewsDTO newsDTO) throws Exception {
-        if (portalRepository.findById(newsDTO.getPortalId()).get().getDeleted() == true){
-            throw new Exception("A new News cannot connect to deleted portal");
-        }
         log.debug("Request to save News : {}", newsDTO);
+        if (portalRepository.findById(newsDTO.getPortalId()).get().getDeleted() == true){
+            throw new BindNewsToDeletedPortalException();
+        }
         News news = newsMapper.toEntity(newsDTO);
         news = newsRepository.save(news);
         return newsMapper.toDto(news);
@@ -70,15 +72,8 @@ public class NewsServiceImpl implements NewsService {
     public Page<NewsDTO> findAll(Pageable pageable) {
         log.debug("Request to get all News");
 
-        ArrayList<News> list = new ArrayList<>();
-        List<News> iterable = newsRepository.findAll();
-        Iterator<News> iterator = iterable.iterator();
-        while (iterator.hasNext()){
-            News news = iterator.next();
-            if (news.getDeleted()==false) list.add(news);
-        }
+        List<News> list = newsRepository.findAllByDeleted(false, pageable);
         Page<News> page = new PageImpl<>(list);
-
         return page.map(newsMapper::toDto);
     }
 
@@ -99,14 +94,11 @@ public class NewsServiceImpl implements NewsService {
     @Override
     public void delete(Long id) {
         log.debug("Request to delete News : {}", id);
-        newsRepository.findById(id).get().setDeleted(true);
+        Optional<News> newsDTO = newsRepository.findById(id);
+        if(newsDTO.isPresent()){
+            newsRepository.findById(id).get().setDeleted(true);
+        }
     }
 
-/*    public void deleteFlag(Long id) {
-        log.debug("Request to delete flag of News : {}", id);
-        Optional<News> news = newsRepository.findById(id);
-        news.get().setDeleted(true);
-
-    }*/
 
 }
