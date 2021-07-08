@@ -3,6 +3,7 @@ package ru.vlsu.practice.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,8 @@ import ru.vlsu.practice.service.dto.PortalDTO;
 import ru.vlsu.practice.service.mapper.PortalMapper;
 
 import javax.sound.sampled.Port;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Optional;
 
 @Service
@@ -60,7 +63,17 @@ public class PortalServiceImpl  implements PortalService {
     @Transactional(readOnly = true)
     public Page<PortalDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Portals");
-        return portalRepository.findAll(pageable).map(portalMapper::toDto);
+
+        ArrayList<Portal> list = new ArrayList<>();
+        Iterable <Portal> iterable = portalRepository.findAll(pageable);
+        Iterator<Portal> iterator = iterable.iterator();
+        while (iterator.hasNext()){
+            Portal portal = iterator.next();
+            if (portal.getDeleted()==false) list.add(portal);
+        }
+        Page<Portal> page = new PageImpl<>(list);
+
+        return page.map(portalMapper::toDto);
     }
 
     @Override

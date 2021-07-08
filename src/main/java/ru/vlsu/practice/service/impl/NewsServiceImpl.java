@@ -1,9 +1,13 @@
 package ru.vlsu.practice.service.impl;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,7 +69,17 @@ public class NewsServiceImpl implements NewsService {
     @Transactional(readOnly = true)
     public Page<NewsDTO> findAll(Pageable pageable) {
         log.debug("Request to get all News");
-        return newsRepository.findAll(pageable).map(newsMapper::toDto);
+
+        ArrayList<News> list = new ArrayList<>();
+        List<News> iterable = newsRepository.findAll();
+        Iterator<News> iterator = iterable.iterator();
+        while (iterator.hasNext()){
+            News news = iterator.next();
+            if (news.getDeleted()==false) list.add(news);
+        }
+        Page<News> page = new PageImpl<>(list);
+
+        return page.map(newsMapper::toDto);
     }
 
     @Override

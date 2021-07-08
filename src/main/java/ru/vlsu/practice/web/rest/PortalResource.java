@@ -116,17 +116,16 @@ public class PortalResource {
     @GetMapping("/portals")
     public ResponseEntity<List<PortalDTO>> getAllPortals(Pageable pageable) {
         log.debug("REST request to get a page of Portals");
-
-
-        ArrayList<PortalDTO> list = new ArrayList<>();
+/*        ArrayList<PortalDTO> list = new ArrayList<>();
         Iterable <PortalDTO> iterable = portalService.findAll(pageable);
         Iterator <PortalDTO> iterator = iterable.iterator();
         while (iterator.hasNext()){
             PortalDTO portalDTO = iterator.next();
             if (portalDTO.getDeleted()==false) list.add(portalDTO);
         }
-        Page<PortalDTO> page = new PageImpl<>(list);
+        Page<PortalDTO> page = new PageImpl<>(list);*/
 
+        Page page = portalService.findAll(pageable);
 
 
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
