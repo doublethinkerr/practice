@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="20210701164910-1" author="vlmarina">
+        <sql dbms="postgresql" splitStatements="true" stripComments="true">
+            CREATE TABLE place
+            (
+            id BIGSERIAL NOT NULL PRIMARY KEY,
+            name character varying(255) NOT NULL,
+            address character varying(255) NOT NULL,
+            administrator character varying(255) NOT NULL,
+            deleted boolean NOT NULL
+            )
+        </sql>
+
+    </changeSet>
+
+    <changeSet id="20210701164910-2" author="vlmarina">
+        <sql dbms="postgresql" splitStatements="true" stripComments="true">
+            ALTER TABLE event
+            ADD COLUMN place_id BIGINT REFERENCES place
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>
