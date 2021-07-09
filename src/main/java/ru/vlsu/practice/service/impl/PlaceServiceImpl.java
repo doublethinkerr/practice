@@ -79,7 +79,6 @@ public class PlaceServiceImpl implements PlaceService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public void delete(Long id) {
         log.debug("Request delete Place : {}", id);
 
