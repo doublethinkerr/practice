@@ -120,10 +120,12 @@ public class NewsResource {
     }
 
     @GetMapping("/news/find")
-    public ResponseEntity<NewsDTO> getNewsByName(@RequestParam String name) {
+    public ResponseEntity<List<NewsDTO>> getNewsByName(@RequestParam String name) {
         log.debug("REST request to get News by name : {}", name);
-        Optional<NewsDTO> newsDTO = newsService.findByName(name);
-        return ResponseUtil.wrapOrNotFound(newsDTO);
+        Page <NewsDTO> page = newsService.findAllByName(name);
+
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     @GetMapping("/news/{id}")

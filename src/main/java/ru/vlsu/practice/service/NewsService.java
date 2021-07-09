@@ -1,5 +1,6 @@
 package ru.vlsu.practice.service;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +19,7 @@ public interface NewsService {
 
     Optional<NewsDTO> findOne(Long id);
 
-    Optional<NewsDTO> findByName(String name);
+    Page<NewsDTO> findAllByName(String name);
 
     void delete(Long id);
 

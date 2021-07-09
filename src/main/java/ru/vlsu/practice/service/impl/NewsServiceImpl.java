@@ -86,9 +86,11 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<NewsDTO> findByName(String name) {
+    public Page<NewsDTO> findAllByName(String name) {
         log.debug("Request to get News by name : {}", name);
-        return newsRepository.findByName(name).map(newsMapper::toDto);
+        List<News> list = newsRepository.findAllByName(name);
+        Page<News> page = new PageImpl<>(list);
+        return page.map(newsMapper::toDto);
     }
 
     @Override

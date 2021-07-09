@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface NewsRepository extends JpaRepository<News, Long>{
 
-    Optional<News> findByName(String name);
+    List<News> findAllByName(String name);
 
     List<News> findAllByDeleted(Boolean del, Pageable pageable);
 
