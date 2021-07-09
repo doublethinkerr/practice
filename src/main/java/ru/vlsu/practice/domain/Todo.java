@@ -7,7 +7,6 @@ import javax.validation.constraints.*;
 
 /**
  * A Todo.
- *
  */
 @Entity
 @Table(name = "todo")
@@ -21,7 +20,7 @@ public class Todo implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "news_name", nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "description")
