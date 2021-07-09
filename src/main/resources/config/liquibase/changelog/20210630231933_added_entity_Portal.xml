@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <changeSet id="20210630231933-1" author="kasatkin">
+        <sql dbms="postgresql" splitStatements="true" stripComments="true">
+            CREATE TABLE portal
+            (
+            id BIGSERIAL PRIMARY KEY,
+            portal_name VARCHAR(255) NOT NULL,
+            description VARCHAR(1000),
+            portal_type VARCHAR(255),
+            deleted BOOLEAN NOT NULL
+            );
+        </sql>
+    </changeSet>
+
+    <changeSet id="20210630231933-2" author="kasatkin">
+        <sql dbms="postgresql" splitStatements="true" stripComments="true">
+            ALTER TABLE news
+            ADD COLUMN portal_id BIGINT REFERENCES portal
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

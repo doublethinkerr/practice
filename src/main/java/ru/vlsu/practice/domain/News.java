@@ -1,17 +1,17 @@
 package ru.vlsu.practice.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 import java.time.Instant;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
-/**
- * A Todo.
- *
- */
 @Entity
-@Table(name = "todo")
-public class Todo implements Serializable {
+@Table(name = "news")
+public class News implements Serializable{
 
     private static final long serialVersionUID = 1L;
 
@@ -27,16 +27,25 @@ public class Todo implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "created_at")
-    private Instant createdAt;
+    @NotNull
+    @Column(name = "news_date")
+    private Instant newsDate;
 
+    @JsonIgnore
+    @NotNull
+    @ManyToOne (optional=true, cascade=CascadeType.MERGE)
+    @JoinColumn (name="portal_id")
+    private Portal portal;
+
+    @NotNull
+    @Column(name = "important")
+    private Boolean important;
+
+    @NotNull
     @Column(name = "deleted")
     private Boolean deleted;
 
-    @Column(name = "duration")
-    private Integer duration;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
         return id;
     }
@@ -45,18 +54,26 @@ public class Todo implements Serializable {
         this.id = id;
     }
 
-    public Todo id(Long id) {
-        this.id = id;
+    public News name(String name) {
+        this.name = name;
         return this;
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
-    public Todo name(String name) {
+    public News description(String name) {
         this.name = name;
         return this;
+    }
+
+    public Portal getPortal() {
+        return portal;
+    }
+
+    public void setPortal(Portal portal) {
+        this.portal = portal;
     }
 
     public void setName(String name) {
@@ -64,68 +81,46 @@ public class Todo implements Serializable {
     }
 
     public String getDescription() {
-        return this.description;
-    }
-
-    public Todo description(String description) {
-        this.description = description;
-        return this;
+        return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public Instant getCreatedAt() {
-        return this.createdAt;
+    public Instant getNewsDate() {
+        return newsDate;
     }
 
-    public Todo createdAt(Instant createdAt) {
-        this.createdAt = createdAt;
-        return this;
+    public void setNewsDate(Instant newsDate) {
+        this.newsDate = newsDate;
     }
 
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
+    public Boolean getImportant() {
+        return important;
+    }
+
+    public void setImportant(Boolean important) {
+        this.important = important;
     }
 
     public Boolean getDeleted() {
-        return this.deleted;
-    }
-
-    public Todo deleted(Boolean deleted) {
-        this.deleted = deleted;
-        return this;
+        return deleted;
     }
 
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
     }
 
-    public Integer getDuration() {
-        return this.duration;
-    }
-
-    public Todo duration(Integer duration) {
-        this.duration = duration;
-        return this;
-    }
-
-    public void setDuration(Integer duration) {
-        this.duration = duration;
-    }
-
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Todo)) {
+        if (!(o instanceof News)) {
             return false;
         }
-        return id != null && id.equals(((Todo) o).id);
+        return id != null && id.equals(((News) o).id);
     }
 
     @Override
@@ -134,16 +129,17 @@ public class Todo implements Serializable {
         return getClass().hashCode();
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
-        return "Todo{" +
+        return "News{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", description='" + getDescription() + "'" +
-            ", createdAt='" + getCreatedAt() + "'" +
-            ", deleted='" + getDeleted() + "'" +
-            ", duration=" + getDuration() +
+            ", newsDate='" + getNewsDate() + "'" +
+            //", portalId='" + getPortal().getId() + "'" +
+            ", important=" + getImportant() + "'" +
+            ", deleted='" + getDeleted() +
             "}";
     }
+
 }
