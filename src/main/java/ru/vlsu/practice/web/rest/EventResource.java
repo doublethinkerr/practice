@@ -2,6 +2,7 @@ package ru.vlsu.practice.web.rest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,7 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.vlsu.practice.repository.EventRepository;
 import ru.vlsu.practice.service.EventService;
+import ru.vlsu.practice.service.PlaceService;
 import ru.vlsu.practice.service.dto.EventDTO;
+import ru.vlsu.practice.service.dto.PlaceDTO;
 import ru.vlsu.practice.web.rest.errors.BadRequestAlertException;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
@@ -61,6 +65,7 @@ public class EventResource {
         if (eventDTO.getId() != null) {
             throw new BadRequestAlertException("A new event cannot already have an ID", ENTITY_NAME, "idexists");
         }
+
         EventDTO result = eventService.save(eventDTO);
         return ResponseEntity
             .created(new URI("/api/events/" + result.getId()))
@@ -148,6 +153,7 @@ public class EventResource {
     public ResponseEntity<List<EventDTO>> getAllEvents(Pageable pageable) {
         log.debug("REST request to get a page of Events");
         Page<EventDTO> page = eventService.findAll(pageable);
+
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -188,10 +194,12 @@ public class EventResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the eventDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/events/find")
-    public ResponseEntity<EventDTO> getEventByName(@RequestParam String name) {
+    public ResponseEntity<List<EventDTO>> getEventByName(@RequestParam String name) {
         log.debug("REST request to get Event by name : {}", name);
-        Optional<EventDTO> eventDTO = eventService.findByName(name);
-        return ResponseUtil.wrapOrNotFound(eventDTO);
+        Page<EventDTO> page = eventService.findAllByName(name);
+
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
 

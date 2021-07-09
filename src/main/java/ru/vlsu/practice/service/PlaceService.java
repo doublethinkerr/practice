@@ -3,6 +3,7 @@ package ru.vlsu.practice.service;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import ru.vlsu.practice.service.dto.EventDTO;
 import ru.vlsu.practice.service.dto.PlaceDTO;
 
 /**
@@ -54,5 +55,5 @@ public interface PlaceService {
      * @param name the id of the entity.
      * @return the entity.
      */
-    Optional<PlaceDTO> findByName(String name);
+    Page<PlaceDTO>  findAllByName(String name);
 }

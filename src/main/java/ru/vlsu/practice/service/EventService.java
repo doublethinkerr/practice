@@ -54,5 +54,5 @@ public interface EventService {
      * @param name the name of the entity.
      * @return the entity.
      */
-    Optional<EventDTO> findByName(String name);
+    Page<EventDTO> findAllByName(String name);
 }

@@ -1,12 +1,15 @@
 package ru.vlsu.practice.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.vlsu.practice.domain.Event;
 import ru.vlsu.practice.domain.Place;
 import ru.vlsu.practice.repository.PlaceRepository;
 import ru.vlsu.practice.service.PlaceService;
@@ -56,11 +59,16 @@ public class PlaceServiceImpl implements PlaceService {
             .map(placeMapper::toDto);
     }
 
+
     @Override
     @Transactional(readOnly = true)
     public Page<PlaceDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Places");
-        return placeRepository.findAll(pageable).map(placeMapper::toDto);
+
+        List<Place> list = placeRepository.findAllByDeleted(false, pageable);
+        Page<Place> page = new PageImpl<>(list);
+        return page.map(placeMapper::toDto);
+
     }
 
     @Override
@@ -71,16 +79,28 @@ public class PlaceServiceImpl implements PlaceService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void delete(Long id) {
-        log.debug("Request to delete Place : {}", id);
-        placeRepository.deleteById(id);
+        log.debug("Request delete Place : {}", id);
+
+        Optional<Place> placeDTO = placeRepository.findById(id);
+        if(placeDTO.isPresent()) {
+            placeRepository.findById(id).get().setDeleted(true);
+            for (Event event : placeDTO.get().getEventsList()) {
+                event.setDeleted(true);
+            }
+            placeRepository.save(placeDTO.get());
+        }
+
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<PlaceDTO> findByName(String name) {
-        log.debug("Request to get Place by name : {}", name);
-        return placeRepository.findByName(name).map(placeMapper::toDto);
+    public Page<PlaceDTO> findAllByName(String name) {
+        List<Place> list = placeRepository.findAllByName(name);
+        Page<Place> page = new PageImpl<>(list);
+
+        return page.map(placeMapper::toDto);
     }
 
 }

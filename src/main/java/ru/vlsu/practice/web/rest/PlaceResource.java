@@ -2,6 +2,7 @@ package ru.vlsu.practice.web.rest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.vlsu.practice.repository.PlaceRepository;
+import ru.vlsu.practice.service.EventService;
 import ru.vlsu.practice.service.PlaceService;
 import ru.vlsu.practice.service.dto.EventDTO;
 import ru.vlsu.practice.service.dto.PlaceDTO;
@@ -149,6 +152,7 @@ public class PlaceResource {
     public ResponseEntity<List<PlaceDTO>> getAllPlaces(Pageable pageable) {
         log.debug("REST request to get a page of Places");
         Page<PlaceDTO> page = placeService.findAll(pageable);
+
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -182,6 +186,7 @@ public class PlaceResource {
             .build();
     }
 
+
     /**
      * {@code GET  /places/:find} : get the "name" place.
      *
@@ -189,9 +194,12 @@ public class PlaceResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the placeDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/places/find")
-    public ResponseEntity<PlaceDTO> getPLaceByName(@RequestParam String name) {
+    public ResponseEntity<List<PlaceDTO>> getPlaceByName(@RequestParam String name) {
         log.debug("REST request to get Place by name : {}", name);
-        Optional<PlaceDTO> placeDTO = placeService.findByName(name);
-        return ResponseUtil.wrapOrNotFound(placeDTO);
+        Page<PlaceDTO> page = placeService.findAllByName(name);
+
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
+
 }

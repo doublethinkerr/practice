@@ -1,14 +1,19 @@
 package ru.vlsu.practice.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.vlsu.practice.domain.Event;
+import ru.vlsu.practice.exception.BindEventToDeletedPlaceException;
 import ru.vlsu.practice.repository.EventRepository;
+import ru.vlsu.practice.repository.PlaceRepository;
 import ru.vlsu.practice.service.EventService;
 import ru.vlsu.practice.service.dto.EventDTO;
 import ru.vlsu.practice.service.mapper.EventMapper;
@@ -26,14 +31,22 @@ public class EventServiceImpl implements EventService {
 
     private final EventMapper eventMapper;
 
-    public EventServiceImpl(EventRepository eventRepository, EventMapper eventMapper) {
+    private final PlaceRepository placeRepository;
+
+    public EventServiceImpl(EventRepository eventRepository, EventMapper eventMapper, PlaceRepository placeRepository) {
         this.eventRepository = eventRepository;
         this.eventMapper = eventMapper;
+        this.placeRepository=placeRepository;
     }
 
     @Override
     public EventDTO save(EventDTO eventDTO) {
         log.debug("Request to save Event : {}", eventDTO);
+
+        if (placeRepository.findById(eventDTO.getPlaceId()).get().getDeleted() == true){
+            throw new BindEventToDeletedPlaceException();
+        }
+
         Event event = eventMapper.toEntity(eventDTO);
         event = eventRepository.save(event);
         return eventMapper.toDto(event);
@@ -60,7 +73,11 @@ public class EventServiceImpl implements EventService {
     @Transactional(readOnly = true)
     public Page<EventDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Events");
-        return eventRepository.findAll(pageable).map(eventMapper::toDto);
+
+        List<Event> list = eventRepository.findAllByDeleted(false, pageable);
+        Page<Event> page = new PageImpl<>(list);
+
+        return page.map(eventMapper::toDto);
     }
 
     @Override
@@ -73,15 +90,21 @@ public class EventServiceImpl implements EventService {
     @Override
     public void delete(Long id) {
         log.debug("Request to delete Event : {}", id);
-        eventRepository.deleteById(id);
+
+        Optional<Event> eventDTO = eventRepository.findById(id);
+        if(eventDTO.isPresent()){
+            eventRepository.findById(id).get().setDeleted(true);
+        }
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<EventDTO> findByName(String name) {
+    public Page<EventDTO> findAllByName(String name) {
         log.debug("Request to get Event by name : {}", name);
-        return eventRepository.findByName(name).map(eventMapper::toDto);
-    }
+        List<Event> list = eventRepository.findAllByName(name);
+        Page<Event> page = new PageImpl<>(list);
 
+        return page.map(eventMapper::toDto);
+    }
 
 }
